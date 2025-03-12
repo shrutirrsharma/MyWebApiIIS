@@ -1,0 +1,1 @@
+BR,D:\VS Code\projects\MyWebApp\MyWebApp.csproj¢net8.0òCSharp12

@@ -1,0 +1,1 @@
+D:\VS Code\projects\MyWebApp\.sonarqube\out\0
