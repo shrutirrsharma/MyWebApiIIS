@@ -2,6 +2,8 @@ trigger:
 - main
 
 pool:
+  name: default
+  demands: agent.name
   vmImage: 'windows-latest'
 
 variables:
