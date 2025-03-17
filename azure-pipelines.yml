@@ -6,26 +6,29 @@ pool:
   demands: agent.name
   vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+stages:
+- stage: DotnetBuild
+  displayName: "ASP.NET WebAPI Build" 
+  jobs:
+   - job: BuildApplication
+     displayName: "Build"
+     steps:
+     - task: DotNetCoreCLI@2
+       inputs:
+         azureSubscription: 'Free Trial(4c511d3d-421c-47bb-b545-0dcb345be265)'
+         command: 'build'
+         projects: 'MyWebApp.sln'
 
-steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+- stage: DotnetTest
+  displayName: "ASP.NET WebAPI Test"
+  jobs:
+    - job: TestApplication
+      displayName: "Test"
+      steps:
+      - task: DotNetCoreCLI@2
+        inputs:
+          azureSubscription: 'Free Trial(4c511d3d-421c-47bb-b545-0dcb345be265)'
+          command: 'test'
+          projects: 'MyWebApp.sln'
+          testRunTitle: 'ASP.NET WebAPI Tests'
+          workingDirectory: '$(Build.SourcesDirectory)'
